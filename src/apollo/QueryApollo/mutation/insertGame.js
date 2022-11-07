@@ -9,6 +9,7 @@ export const InsertGame = gql`
         image_url
         genre
         GameRev {
+          id
           ratings
           review_game
         }

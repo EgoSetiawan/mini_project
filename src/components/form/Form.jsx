@@ -30,7 +30,7 @@ function Form() {
 
   const [data, setData] = useState(datas);
 
-  console.log(data);
+  // console.log(data);
 
   const { insertGameReview, loadingGameReview, errorGameReview } =
     InsertReviewGame();
@@ -41,45 +41,34 @@ function Form() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // console.log(e.target[6]);
 
-    const file = e.target[2]?.files[0];
+    const file = e.target[6]?.files[0];
     console.log(file);
     if (!file) return;
 
     const storageRef = ref(storage, `files/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setProgresspercent(progress);
-      },
-      (error) => {
-        alert(error);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          insertGameReview({
-            variables: {
-              objects: {
-                title: data.titleGame,
-                genre: data.genre,
-                imgGame: downloadURL,
-                GamerRev: {
-                  data: {
-                    id_user: UserId,
-                    review: data.reviewGame,
-                    ratings: data.ratings,
-                  },
+    uploadTask.on("state_changed", () => {
+      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        insertGameReview({
+          variables: {
+            objects: {
+              title: data.titleGame,
+              genre: data.genre,
+              image_url: downloadURL,
+              GameRev: {
+                data: {
+                  id_user: UserId,
+                  review_game: data.reviewGame,
+                  ratings: data.ratings,
                 },
               },
             },
-          });
+          },
         });
-      }
-    );
+      });
+    });
   };
 
   return (

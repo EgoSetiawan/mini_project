@@ -6,6 +6,7 @@ export const GetGame = gql`
       id
       title
       genre
+      image_url
       GameRev {
         ratings
         review_game
